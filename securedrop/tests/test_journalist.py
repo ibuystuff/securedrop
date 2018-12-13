@@ -22,9 +22,9 @@ import journalist_app as journalist_app_module
 import utils
 
 os.environ['SECUREDROP_ENV'] = 'test'  # noqa
-from sdconfig import SDConfig, config
 
 from db import db
+from sdconfig import SDConfig
 from models import (InvalidPasswordLength, Journalist, Reply, Source,
                     Submission)
 from utils.instrument import InstrumentedApp
@@ -1148,7 +1148,9 @@ def test_admin_add_user_integrity_error(journalist_app, test_admin, mocker):
             "None [SQL: 'STATEMENT'] [parameters: 'PARAMETERS']") in log_event
 
 
-def test_logo_upload_with_valid_image_succeeds(journalist_app, test_admin):
+def test_logo_upload_with_valid_image_succeeds(journalist_app,
+                                               test_admin,
+                                               config):
     # Save original logo to restore after test run
     logo_image_location = os.path.join(config.SECUREDROP_ROOT,
                                        "static/i/logo.png")
@@ -1341,11 +1343,14 @@ def test_passphrase_migration_on_reset(journalist_app):
     assert journalist.valid_password(VALID_PASSWORD)
 
 
-def test_journalist_reply_view(journalist_app, test_source, test_journo):
+def test_journalist_reply_view(journalist_app,
+                               test_source,
+                               test_journo,
+                               config):
     source, _ = utils.db_helper.init_source()
     journalist, _ = utils.db_helper.init_journalist()
     submissions = utils.db_helper.submit(source, 1)
-    replies = utils.db_helper.reply(journalist, source, 1)
+    replies = utils.db_helper.reply(journalist, source, 1, config)
 
     subm_url = url_for('col.download_single_file',
                        filesystem_id=submissions[0].source.filesystem_id,
@@ -1435,7 +1440,8 @@ def test_edit_hotp(journalist_app, test_journo):
 
 def test_delete_source_deletes_submissions(journalist_app,
                                            test_journo,
-                                           test_source):
+                                           test_source,
+                                           config):
     """Verify that when a source is deleted, the submissions that
     correspond to them are also deleted."""
 
@@ -1444,7 +1450,7 @@ def test_delete_source_deletes_submissions(journalist_app,
         journo = Journalist.query.get(test_journo['id'])
 
         utils.db_helper.submit(source, 2)
-        utils.db_helper.reply(journo, source, 2)
+        utils.db_helper.reply(journo, source, 2, config)
 
         journalist_app_module.utils.delete_collection(
             test_source['filesystem_id'])
@@ -1455,7 +1461,8 @@ def test_delete_source_deletes_submissions(journalist_app,
 
 def test_delete_collection_updates_db(journalist_app,
                                       test_journo,
-                                      test_source):
+                                      test_source,
+                                      config):
     """Verify that when a source is deleted, their Source identity
     record, as well as Reply & Submission records associated with
     that record are purged from the database."""
@@ -1465,7 +1472,7 @@ def test_delete_collection_updates_db(journalist_app,
         journo = Journalist.query.get(test_journo['id'])
 
         utils.db_helper.submit(source, 2)
-        utils.db_helper.reply(journo, source, 2)
+        utils.db_helper.reply(journo, source, 2, config)
 
         journalist_app_module.utils.delete_collection(
             test_source['filesystem_id'])
@@ -1483,7 +1490,8 @@ def test_delete_collection_updates_db(journalist_app,
 
 def test_delete_source_deletes_source_key(journalist_app,
                                           test_source,
-                                          test_journo):
+                                          test_journo,
+                                          config):
     """Verify that when a source is deleted, the PGP key that corresponds
     to them is also deleted."""
 
@@ -1492,7 +1500,7 @@ def test_delete_source_deletes_source_key(journalist_app,
         journo = Journalist.query.get(test_journo['id'])
 
         utils.db_helper.submit(source, 2)
-        utils.db_helper.reply(journo, source, 2)
+        utils.db_helper.reply(journo, source, 2, config)
 
         # Source key exists
         source_key = current_app.crypto_util.getkey(
@@ -1520,7 +1528,7 @@ def test_delete_source_deletes_docs_on_disk(journalist_app,
         journo = Journalist.query.get(test_journo['id'])
 
         utils.db_helper.submit(source, 2)
-        utils.db_helper.reply(journo, source, 2)
+        utils.db_helper.reply(journo, source, 2, config)
 
         # Encrypted documents exists
         dir_source_docs = os.path.join(config.STORE_DIR,
