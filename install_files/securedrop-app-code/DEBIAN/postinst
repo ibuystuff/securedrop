@@ -79,12 +79,15 @@ function permit_wsgi_authorization() {
 case "$1" in
     configure)
     # Ensure SecureDrop's necessary directories are created
-    for dir in /etc/securedrop /var/lib/securedrop/{,tmp,store,keys,backups} /var/www/securedrop; do
+    for dir in /var/lib/securedrop/{,tmp,store,keys,backups} /var/www/securedrop; do
       mkdir -p "$dir"
       chmod 0700 "$dir"
     done
 
-    chown -R www-data:www-data /etc/securedrop /var/lib/securedrop /var/www/securedrop
+    chown -R www-data:www-data /var/lib/securedrop /var/www/securedrop
+
+    mkdir -p /etc/securedrop
+    chmod 0750 /etc/securedrop
 
     pip install --no-index --find-links=/var/securedrop/wheelhouse --upgrade \
       -r /var/www/securedrop/requirements/securedrop-app-code-requirements.txt
@@ -95,7 +98,7 @@ case "$1" in
 
     # Migrate the python-based config to JSON
     /var/www/securedrop/populate_config.py
-    chown -R www-data:www-data /etc/securedrop
+    chown -R root:www-data /etc/securedrop
 
     # Apache's default sites are not allowed by the securedrop apparmor profile
     # disable the site before putting the apache apparmor profile in enforce
