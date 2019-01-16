@@ -55,10 +55,15 @@
 - name: Give dpkg verify container acccess to debs
   hosts: testers
   gather_facts: false
+  vars:
+    sd_build_root: "{{ playbook_dir + '/../../build' }}"
+    sd_target_distro: "{{ 'xenial' if securedrop_build_xenial_support|default(False)|bool else 'trusty' }}"
+    sd_build_dest: "{{ sd_build_root + '/' + sd_target_distro }}"
+
   tasks:
     - name: Discover local debian build files
       find:
-        paths: "{{ playbook_dir + '/../../build/' }}"
+        paths: "{{ sd_build_dest }}"
         patterns: '*.deb'
       delegate_to: localhost
       register: debian_files
