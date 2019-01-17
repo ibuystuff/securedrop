@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: False
+  tasks:
+    # Build logic uses sudo, so stick it in the container
+    - name: Install python & sudo for Ansible
+      raw: apt-get update && apt-get install -y python-minimal sudo
+      become: False
+      changed_when: False

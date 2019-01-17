@@ -51,11 +51,13 @@ scenario:
   converge_sequence:
     - destroy
     - create
+    - prepare
     - converge
     - destroy
   test_sequence:
     - destroy
     - create
+    - prepare
     - converge
     - verify
     - destroy
