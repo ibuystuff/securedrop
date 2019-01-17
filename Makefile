@@ -100,7 +100,7 @@ build-debs-notest: ## Builds and tests debian packages (sans tests)
 .PHONY: build-debs-xenial
 build-debs-xenial: ## Builds and tests debian packages (includes Xenial overrides, TESTING ONLY)
 	@if [[ "${CIRCLE_BRANCH}" != docs-* ]]; then \
-		molecule converge -s builder -- -e securedrop_build_xenial_support=True; \
+		molecule converge -s builder-xenial -- -e securedrop_build_xenial_support=True; \
 		else echo Not running on docs branch...; fi
 
 .PHONY: build-gcloud-docker

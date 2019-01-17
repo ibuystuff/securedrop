@@ -21,7 +21,7 @@ if [[ "${CIRCLE_BRANCH:-}" != docs-* ]]; then
             ;;
     esac
 
-    molecule "${molecule_action}" -s builder
+    molecule "${molecule_action}" -s builder-trusty
 else
     echo Not running on docs branch...
 fi
