@@ -6,15 +6,15 @@ TRUSTY_DEPS=python-pip,apparmor-utils,gnupg2,haveged,python,secure-delete,sqlite
 XENIAL_DEPS=python-pip,apparmor-utils,gnupg2,haveged,python,secure-delete,sqlite3,apache2,libapache2-mod-wsgi,libapache2-mod-xsendfile,redis-server,supervisor,securedrop-keyring,securedrop-config,libpython2.7-dev
 
 
-ifeq ($(shell lsb_release -sc), trusty)
-    SUBSTVARS = -Vdist:Depends="apache2-mpm-worker"
+ifeq ($(shell lsb_release -sc),trusty)
+	SUBSTVARS = -Vdist:Depends="apache2-mpm-worker"
 else
-    SUBSTVARS = -Vdist:Depends="apache2"
+	SUBSTVARS = -Vdist:Depends="apache2"
 endif
 
 
 %:
-    dh $@
+	dh $@
 
 override_dh_gencontrol:
-    dh_gencontrol -- $(SUBSTVARS)
+	dh_gencontrol -- $(SUBSTVARS)
