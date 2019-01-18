@@ -53,6 +53,10 @@
   with_items: "{{ apparmor_profiles }}"
   tags: apparmor
 
+- name: Pause for interactive debugging
+  pause:
+    minutes: 60
+
 - name: Build securedrop-app-code Debian package.
   command: dpkg-buildpackage -us -uc
   args:
