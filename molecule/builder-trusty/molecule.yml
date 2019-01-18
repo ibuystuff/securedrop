@@ -7,33 +7,6 @@ platforms:
   - name: trusty-sd-app
     groups:
       - builders
-  - name: trusty-sd-generic-ossec-agent
-    groups:
-      - builders
-  - name: trusty-sd-generic-ossec-server
-    groups:
-      - builders
-  - name: trusty-sd-generic-ossec-agent2
-    groups:
-      - builders
-  - name: trusty-sd-generic-ossec-server2
-    groups:
-      - builders
-  - name: trusty-sd-grsec
-    groups:
-      - builders
-  - name: trusty-sd-config
-    groups:
-      - builders
-  - name: trusty-sd-keyring
-    groups:
-      - builders
-  - name: trusty-sd-sec-update
-    groups:
-      - builders
-  - name: trusty-sd-dpkg-verification
-    groups:
-      - testers
 provisioner:
   name: ansible
   inventory:
